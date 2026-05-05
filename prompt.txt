@@ -1,0 +1,134 @@
+PROMPT USED FOR COMPANY RESEARCH AND SCORING
+Tool: Claude (claude-sonnet-4-6)
+Task: DeepThought Business Analytics Assignment — Part A
+
+==============================================================
+SYSTEM CONTEXT PROVIDED TO MODEL
+==============================================================
+
+You are performing a high-precision B2B research task for identifying "Federer Companies" based on a strict Ideal Customer Profile (ICP).
+
+TARGET: Exactly 25 manufacturing companies in Hyderabad (India).
+
+GEOGRAPHY CONSTRAINT:
+- Only include companies with real manufacturing or R&D presence in Hyderabad
+- Exclude companies with only sales/branch offices
+
+TARGET SEGMENTS (STRICT FOCUS):
+- Specialty biotech (enzymes, recombinant proteins, fermentation)
+- Diagnostics & life sciences (IVD kits, molecular tools)
+- Specialty chemicals (custom synthesis, performance chemicals)
+- Medical devices
+- Industrial sensors & instrumentation
+- Aerospace / defence electronics
+
+AUTO-REJECT (MANDATORY) — immediately exclude:
+- Traders / distributors
+- CRO / CDMO / testing labs
+- Generic pharma (APIs, tablets, syrups)
+- CNC / job-work / fabrication units
+- Companies with revenue > Rs.500Cr
+- PE/VC-controlled companies
+- No activity in last 2 years
+
+==============================================================
+SCORING FRAMEWORK
+==============================================================
+
+Evaluate each company on:
+- C1 Manufacturer (10 pts)
+- C2 India-based (5 pts)
+- C3 Differentiation (25 pts)
+- C4 Technical Decision Maker (20 pts)
+- C5 Sector Tailwind (20 pts)
+- C6 Growth Signals (20 pts)
+
+STRICT SCORING RULES — use ONLY:
+- Strong = full weight
+- Moderate = half weight
+- Weak = 0
+
+C3 STRICTNESS: Strong ONLY if patent / DSIR recognition / regulatory approval (USFDA, WHO-GMP, AS9100) / OR confirmed "first/only/pioneer in India" claim. Otherwise Moderate or Weak.
+
+C4 STRICTNESS: Strong ONLY if founder/MD holds PhD or degree from IIT/IISc/BITS, or is ex-ISRO/DRDO. Industry experience without premier institution = Moderate. Non-technical = Weak.
+
+C6 STRICTNESS: Strong = 2+ confirmed signals (facility expansion, revenue growth in filings, 5+ Naukri/LinkedIn roles, new certification, new export markets). Moderate = 1 signal. Weak = none.
+
+BAND DISTRIBUTION (CRITICAL):
+- A (80-100): MAX 5 companies
+- B (60-79): 12-15 companies
+- C (40-59): remaining companies
+- D (<40): NOT included in final 25
+
+EVIDENCE RULES — each score MUST include specific verifiable evidence:
+DO NOT USE: "leading company", "strong presence", "well-known"
+DO USE: certifications (USFDA, AS9100, DSIR), product names, founder degree (IIT, PhD, ex-ISRO), facility size, order book, funding round, expansion announcement
+
+==============================================================
+OUTPUT FORMAT
+==============================================================
+
+Return ONLY CSV. No explanation, no text before or after.
+
+Columns:
+Company Name, Website, City, Segment, What They Make, Revenue Band, Decision Maker, DM Title, DM Background, C1 Manufacturer Score, C1 Evidence, C2 India Score, C2 Evidence, C3 Differentiation Score, C3 Evidence, C4 Tech DM Score, C4 Evidence, C5 Tailwind Score, C5 Evidence, C6 Growth Score, C6 Evidence, Federer Score, Score Band, Verdict, Verdict Reasoning, Personalization Hook, Evidence Sources
+
+DATA FORMAT RULES:
+- Revenue Band MUST be: Rs.10-50Cr / Rs.50-100Cr / Rs.100-300Cr / Rs.300-500Cr
+- Score Band MUST be: A / B / C
+- Verdict MUST be: Strong fit / Fit / Borderline
+- No symbols like em-dashes
+- No empty fields
+- No line breaks inside cells
+- Use quotes if text contains commas
+
+PERSONALIZATION HOOK: One specific, recent, verifiable fact usable in cold outreach line 1. Must reference a real milestone: new facility, certification, product launch, funding, or expansion announcement.
+
+==============================================================
+ITERATIVE REFINEMENT PROMPTS USED
+==============================================================
+
+ROUND 1 — Universe building:
+"List 80-100 specialty manufacturing companies in Hyderabad across these segments: specialty biotech, diagnostics, specialty chemicals, medical devices, industrial sensors, aerospace/defence electronics. Include website and brief description. Flag any that are obviously CROs, trading companies, or generic pharma."
+
+ROUND 2 — Hard filter pass:
+"From this list, immediately remove: CROs, testing labs, CDMO service companies, generic pharma manufacturers, companies with revenue > Rs.500Cr, PE/VC-controlled entities, and subsidiaries of large groups. Explain why each removed company was rejected."
+
+ROUND 3 — Scoring pass:
+"Score each remaining company on C1-C6 using the Federer scoring model. Be conservative — C3 Strong only if patent/DSIR/regulatory approval confirmed. C4 Strong only for PhD/IIT/ex-ISRO founders. Show specific evidence for each score, not assertions."
+
+ROUND 4 — Band validation and distribution check:
+"Review final scores. A-band must be max 5 companies. If more than 5 score 80+, downgrade the weakest A-band companies by applying strict C3 criterion (no unconfirmed differentiation counts as Strong). Confirm final distribution: A=5, B=12-15, C=remainder."
+
+ROUND 5 — Personalization hook generation:
+"For each of the 25 final companies, generate one specific, recent, verifiable personalization hook — a fact about a milestone in the last 12-18 months that could open a cold outreach email. Must be company-specific, not generic sector commentary."
+
+==============================================================
+VALIDATION CHECKS APPLIED POST-OUTPUT
+==============================================================
+
+1. Total company count = 25
+2. A-band count <= 5
+3. B-band count between 12-15
+4. All 27 columns present for every row
+5. No empty fields
+6. No em-dashes or special characters in numeric/band fields
+7. Revenue band matches one of four allowed formats
+8. Score Band is exactly "A", "B", or "C"
+9. Verdict is exactly "Strong fit", "Fit", or "Borderline"
+10. Every C3 Strong score has confirmed patent / DSIR / regulatory approval in evidence column
+
+==============================================================
+MANUAL VERIFICATION STEPS
+==============================================================
+
+For each company in the final 25:
+- Website visited to confirm manufacturing (not services) description
+- USFDA facility database checked for pharma companies
+- DSIR recognition list cross-referenced for R&D recognition claims
+- LinkedIn checked for founder background and recent company posts
+- Naukri checked for active job postings (C6 hiring signal)
+- MCA/Tofler checked for revenue estimates where available
+- News search for facility inaugurations, certifications, product launches cited in C6 evidence
+
+==============================================================
